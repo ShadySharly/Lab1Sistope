@@ -2,41 +2,70 @@
 #/////////////////////////////////////////////////////////////////// VARIABLES //////////////////////////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CC = gcc
+CL = clean
 BIN_DIR = ./bin
 SRC_DIR = ./src
-EXE_NAME = pipeline.exe
-C_FLAGS = -c -Wall
+OBJ_DIR = ./obj
+MAIN_OBJ = $(OBJ_DIR)/main.o
+PIPE_OBJ = $(OBJ_DIR)/pipeline.o
+MAIN_SRC = $(SRC_DIR)/main.c
+PIPE_SRC = $(SRC_DIR)/pipeline.c
+EXEC = $(BIN_DIR)/pipeline
+C_FLAGS = -g -Wall
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #//////////////////////////////////////////////////////////////////// TARGETS ///////////////////////////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # Esta es la target que se ejecuta por defecto si se escribe "make" en la consola
-all: release
+.PHONY: all
+all: $(EXEC)
 
 # Compilación principal del ejecutable
-release: clean make_bin main.o pipeline.o 
-	$(CC) main.o  pipeline.o -o $(BIN_DIR)/$(EXE_NAME) -Wall -I.
+$(EXEC): clean bin obj $(MAIN_OBJ) $(PIPE_OBJ)
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Compiling target "$(@F)"'
+	$(CC) $(C_FLAGS) $(MAIN_OBJ) $(PIPE_OBJ) -o $@
 	#@echo 'Compilando target: $@'
-	#gcc $(SRC_DIR)/ejemPunteros.c -o $(DIR_OUTPUT)/$(NOMBRE_EJECUTABLE) -O2
+	#gcc $(SRC_DIR)/ejemPunteros.c -o $(DIR_OUTPUT)/$(NOMBRE_EJECUTABLE)-O2
 	#@echo ' '
 	#@echo $@ compilado en el directorio $(DIR_OUTPUT)
 	#@echo "Ingrese al directorio '"$(DIR_OUTPUT)"' haciendo: cd "$(DIR_OUTPUT)
 	#@echo "Ejecute el programa haciendo: ./"$(NOMBRE_EJECUTABLE)""
 	#@echo ' '
 	#@echo "Si tiene problemas, en el fichero README blablabla"
+	@echo '-------------------------------------------------------------------------'
 
-main.o: $(SRC_DIR)/main.c 
-	$(CC) $(C_FLAGS) $(SRC_DIR)/main.c
+$(MAIN_OBJ): $(MAIN_SRC)
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Compiling target "$(@F)"'
+	@echo '    "$(@F)" compiled in the directory "$(@D)"'
+	$(CC) $(C_FLAGS) -c $< -o $@
+	@echo '-------------------------------------------------------------------------'
 
-pipeline.o: $(SRC_DIR)/pipeline.c 
-	$(CC) $(C_FLAGS) $(SRC_DIR)/pipeline.c
+$(PIPE_OBJ): $(PIPE_SRC)
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Compiling target "$(@F)"'
+	@echo '    "$(@F)" compiled in the directory "$(@D)"'
+	$(CC) $(C_FLAGS) -c $< -o $@
+	@echo '-------------------------------------------------------------------------'
 
-make_bin:
-	@echo 'Creando directorio BIN "$(BIN_DIR)"'
-	mkdir -p $(BIN_DIR)
+.PHONY: bin
+bin: 
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Creating direcotry "$@"'
+	mkdir $(BIN_DIR)
+	@echo '-------------------------------------------------------------------------'
+
+.PHONY: obj
+obj: 
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Creating direcotry "$@"'
+	mkdir $(OBJ_DIR)
+	@echo '-------------------------------------------------------------------------'
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #Compilación con opciones de debugueo y sin optimizaciones
+.PHONY: debug
 debug:
 	@echo 'Compilando target: $@'
 	mkdir -p $(BIN_DIR)
@@ -49,9 +78,10 @@ debug:
 	@echo "Si tiene problemas, en el fichero README blablabla"
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# Other Targets
-clean:
-	#Borro el contenido del directorio de compilación
-	rm -rf $(BIN_DIR)/*
-	-@echo ' ' 
-
+.PHONY: clean
+clean: 
+	@echo '-------------------------------------------------------------------------'
+	@echo ' => Deleting "$(BIN_DIR)" directory and "$(OBJ_DIR)" directory compilation contents'
+	rm -rf $(BIN_DIR)
+	rm -rf $(OBJ_DIR)
+	@echo '-------------------------------------------------------------------------'

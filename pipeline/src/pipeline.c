@@ -18,27 +18,28 @@ void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, in
 
     int c;
 
-    while ( c = getopt (argc, argv, "cunb:") != -1) {
+    while ( (c = getopt (argc, argv, "c:u:n:b:")) != -1) {
 
         switch (c) {
             case 'c':
-                cValue = atoi(optarg);
-                printf("cValue: %d\n", cValue);
+                *cValue = atoi(optarg);
+                printf("cValue: %d\n", *cValue);
+    
                 break;
             
             case 'u':
-                uValue = atoi(optarg);
-                printf("cValue: %d\n", uValue);
+                *uValue = atoi(optarg);
+                printf("cValue: %d\n", *uValue);
                 break;
             
             case 'n':
-                nValue = atoi(optarg);
-                printf("cValue: %d\n", nValue);
+                *nValue = atoi(optarg);
+                printf("cValue: %d\n", *nValue);
                 break;
             
             case 'b':
-                bValue = atoi(optarg);
-                printf("cValue: %d\n", bValue);
+                *bValue = atoi(optarg);
+                printf("cValue: %d\n", *bValue);
                 break;
             
             case '?':
@@ -51,8 +52,7 @@ void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, in
                     
                 }
 
-                if (optopt == 'n') {
-                    
+                if (optopt == 'n') {           
                 }
 
                 if (optopt == 'b') {

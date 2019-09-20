@@ -15,17 +15,23 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 
+    printf("%s\n", "0");
     int* cValue = (int*)malloc(sizeof(int));
     int* uValue = (int*)malloc(sizeof(int));
     int* nValue = (int*)malloc(sizeof(int));
     int* bValue = (int*)malloc(sizeof(int));
 
+    printf("%s\n", "1");
+
     if ( (cValue != NULL) && (uValue != NULL) && (nValue != NULL) && (bValue != NULL) ) {
+        printf("%s\n", "2");
         getParams (argc, argv, cValue, uValue, nValue, bValue);
 
     }
+
+    return 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
