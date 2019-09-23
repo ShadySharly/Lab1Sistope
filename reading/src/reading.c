@@ -13,7 +13,16 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
+void reading (char* fileName) {
 
+    FILE* png_file = fopen (fileName, "r");
+
+    int pixel[100];
+
+    if (png_file != NULL) {
+        int** png_matrix = (int**)malloc(sizeof(int*));
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // - INPUTS:

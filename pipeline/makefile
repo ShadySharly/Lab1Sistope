@@ -3,9 +3,9 @@
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CC = gcc
 CL = clean
-BIN_DIR = ./bin
+BIN_DIR = ../bin
 SRC_DIR = ./src
-OBJ_DIR = ./obj
+OBJ_DIR = ../obj
 MAIN_OBJ = $(OBJ_DIR)/main.o
 PIPE_OBJ = $(OBJ_DIR)/pipeline.o
 MAIN_SRC = $(SRC_DIR)/main.c
@@ -18,36 +18,42 @@ C_FLAGS = -g -Wall
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # Esta es la target que se ejecuta por defecto si se escribe "make" en la consola
 .PHONY: all
-all: $(EXEC)
+all: inimsj $(EXEC) endmsj
 
 # Compilación principal del ejecutable
 $(EXEC): clean bin obj $(MAIN_OBJ) $(PIPE_OBJ)
 	@echo '-------------------------------------------------------------------------'
 	@echo ' => Compiling target "$(@F)"'
 	$(CC) $(C_FLAGS) $(MAIN_OBJ) $(PIPE_OBJ) -o $@
-	#@echo 'Compilando target: $@'
-	#gcc $(SRC_DIR)/ejemPunteros.c -o $(DIR_OUTPUT)/$(NOMBRE_EJECUTABLE)-O2
-	#@echo ' '
-	#@echo $@ compilado en el directorio $(DIR_OUTPUT)
-	#@echo "Ingrese al directorio '"$(DIR_OUTPUT)"' haciendo: cd "$(DIR_OUTPUT)
-	#@echo "Ejecute el programa haciendo: ./"$(NOMBRE_EJECUTABLE)""
-	#@echo ' '
-	#@echo "Si tiene problemas, en el fichero README blablabla"
+	@echo ' => "$(@F)" compiled in the directory "$(@D)"'
+	@echo ' => Enter the directory "$(@D)" by typing: cd $(@D)'
+	@echo ' => Execute the program by typing: ./$(@F)'
+	@echo ' => For any problem check the README file'
 	@echo '-------------------------------------------------------------------------'
 
 $(MAIN_OBJ): $(MAIN_SRC)
 	@echo '-------------------------------------------------------------------------'
 	@echo ' => Compiling target "$(@F)"'
-	@echo '    "$(@F)" compiled in the directory "$(@D)"'
 	$(CC) $(C_FLAGS) -c $< -o $@
+	@echo ' => "$(@F)" compiled in the directory "$(@D)"'
 	@echo '-------------------------------------------------------------------------'
 
 $(PIPE_OBJ): $(PIPE_SRC)
 	@echo '-------------------------------------------------------------------------'
 	@echo ' => Compiling target "$(@F)"'
-	@echo '    "$(@F)" compiled in the directory "$(@D)"'
 	$(CC) $(C_FLAGS) -c $< -o $@
+	@echo ' => "$(@F)" compiled in the directory "$(@D)"'
 	@echo '-------------------------------------------------------------------------'
+
+.PHONY: inimsj
+inimsj:
+	@echo '/////////////////////////////////////////////////////////////////////////'
+	@echo ' => Compiling "pipeline" program'
+	@echo '-------------------------------------------------------------------------'
+
+.PHONY: endmsj
+endmsj:
+	@echo '/////////////////////////////////////////////////////////////////////////'
 
 .PHONY: bin
 bin: 
@@ -81,7 +87,9 @@ debug:
 .PHONY: clean
 clean: 
 	@echo '-------------------------------------------------------------------------'
-	@echo ' => Deleting "$(BIN_DIR)" directory and "$(OBJ_DIR)" directory compilation contents'
+	@echo ' => Deleting directory "$(BIN_DIR)" and directory "$(OBJ_DIR)" compilation contents'
 	rm -rf $(BIN_DIR)
 	rm -rf $(OBJ_DIR)
 	@echo '-------------------------------------------------------------------------'
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

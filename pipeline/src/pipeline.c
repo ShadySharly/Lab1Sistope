@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <string.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
@@ -14,32 +15,32 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, int* bValue) {
+void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, int* bValue) {
 
     int c;
+    *bValue = 0;
 
-    while ( (c = getopt (argc, argv, "c:u:n:b:")) != -1) {
+    while ( (c = getopt (argc, argv, "c:m:n:b")) != -1) {
 
         switch (c) {
             case 'c':
                 *cValue = atoi(optarg);
                 printf("cValue: %d\n", *cValue);
-    
                 break;
             
-            case 'u':
-                *uValue = atoi(optarg);
-                printf("cValue: %d\n", *uValue);
+            case 'm':
+                strcpy(mValue, optarg);
+                printf("mValue: %s\n", mValue);
                 break;
             
             case 'n':
                 *nValue = atoi(optarg);
-                printf("cValue: %d\n", *nValue);
+                printf("nValue: %d\n", *nValue);
                 break;
             
             case 'b':
-                *bValue = atoi(optarg);
-                printf("cValue: %d\n", *bValue);
+                *bValue = 1;
+                printf("bValue: %d\n", *bValue);
                 break;
             
             case '?':
@@ -48,7 +49,7 @@ void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, in
 
                 }
 
-                if (optopt == 'u') {
+                if (optopt == 'm') {
                     
                 }
 
@@ -63,7 +64,6 @@ void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, in
                 break;
             }
 
-
     }
 }
 
@@ -71,6 +71,12 @@ void getParams (int argc, char** argv, int* cValue, int* uValue, int* nValue, in
 // - INPUTS:
 // - OUTPUTS:
 // - DESCRIPTION:
+
+void pipeline () {
+    
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
