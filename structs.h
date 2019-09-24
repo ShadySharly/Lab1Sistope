@@ -11,7 +11,7 @@
 // - DESCRIPTION:
 typedef struct Image {
 
-    Pixel** matrix;
+    struct Pixel** matrix;
     int height;
     int width;
 

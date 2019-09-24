@@ -7,6 +7,7 @@
 # include <string.h>
 # include <png.h>
 
+# include "../../structs.h"
 # include "reading.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,11 +17,10 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-void read_png_file(char fileName[]) {
-
-    int width, height;
-    png_byte color_type;
-    png_byte bit_depth;
+void read_image (char fileName[]) {
+  int width, height;
+  png_byte color_type;
+  png_byte bit_depth;
     png_bytep *row_pointers = NULL;
 
     FILE *f = fopen(fileName, "rb");       
@@ -37,10 +37,10 @@ void read_png_file(char fileName[]) {
 
     png_read_info(png, info);
 
-    width      = png_get_image_width(png, info);
-    height     = png_get_image_height(png, info);
+    width = png_get_image_width(png, info);
+    height = png_get_image_height(png, info);
     color_type = png_get_color_type(png, info);
-    bit_depth  = png_get_bit_depth(png, info);
+    bit_depth = png_get_bit_depth(png, info);
 
     // Read any color_type into 8bit depth, RGBA format.
     // See http://www.libpng.org/pub/png/libpng-manual.txt
@@ -84,9 +84,15 @@ void read_png_file(char fileName[]) {
     png_destroy_read_struct(&png, &info, NULL);
 
     process_png_file (height, width, row_pointers);
-}
+}   
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS:
+// - OUTPUTS:
+// - DESCRIPTION:
 
 void process_png_file(int height, int width, png_bytep* row_pointers) {
+
   for(int y = 0; y < height; y++) {
     png_bytep row = row_pointers[y];
     for(int x = 0; x < width; x++) {
@@ -97,11 +103,5 @@ void process_png_file(int height, int width, png_bytep* row_pointers) {
     printf("\n");
   }
 }
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////0o

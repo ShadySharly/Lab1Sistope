@@ -18,8 +18,8 @@
 
 int main(int argc, char** argv) {
 
-    char input_file[50] = "../../images/imagen_4.png";
-    read_png_file(input_file);
+    char input_file[50] = "../../images/bryan.png";
+    read_image (input_file);
 
     return 0;
 }
