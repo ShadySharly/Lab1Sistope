@@ -5,6 +5,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <string.h>
+# include <png.h>
 
 # include "reading.h"
 
@@ -17,7 +18,8 @@
 
 int main(int argc, char** argv) {
 
-
+    char input_file[50] = "../../images/imagen_4.png";
+    read_png_file(input_file);
 
     return 0;
 }

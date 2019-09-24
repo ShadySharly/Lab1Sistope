@@ -2,6 +2,7 @@
     "files.associations": {
         "string.h": "c",
         "getopt.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "png.h": "c"
     }
 }
