@@ -19,67 +19,72 @@
 
 Image* reading (char fileName[]) {
 
-    FILE *f = fopen(fileName, "rb");
+    int width, height;
+png_byte color_type;
+png_byte bit_depth;
+png_bytep *row_pointers = NULL;
 
-    if (f != NULL) {
+    FILE *fp = fopen(fileName, "rb");
 
-        int height, width;
-        png_byte color_type, bit_depth;
-        png_bytep* row = NULL;
-        
-        png_structp png_image = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-        png_infop png_info = png_create_info_struct(png_image);
+  png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if(!png) abort();
 
-        png_init_io(png_image, f);
-        png_read_info(png_image, png_info);
+  png_infop info = png_create_info_struct(png);
+  if(!info) abort();
 
-        height = png_get_image_height(png_image, png_info);
-        width = png_get_image_width(png_image, png_info);
-        color_type = png_get_color_type(png_image, png_info);
-        bit_depth  = png_get_bit_depth(png_image, png_info);
+  if(setjmp(png_jmpbuf(png))) abort();
 
-        if(bit_depth == 16)
-            png_set_strip_16(png_image);
+  png_init_io(png, fp);
 
-        if( (color_type == PNG_COLOR_TYPE_PALETTE) )
-            png_set_palette_to_rgb(png_image);
+  png_read_info(png, info);
 
-        if( (color_type == PNG_COLOR_TYPE_GRAY) && (bit_depth < 8) )
-            png_set_expand_gray_1_2_4_to_8(png_image);
+  width      = png_get_image_width(png, info);
+  height     = png_get_image_height(png, info);
+  color_type = png_get_color_type(png, info);
+  bit_depth  = png_get_bit_depth(png, info);
 
-        if(png_get_valid(png_image, png_info, PNG_INFO_tRNS))
-            png_set_tRNS_to_alpha(png_image);
+  // Read any color_type into 8bit depth, RGBA format.
+  // See http://www.libpng.org/pub/png/libpng-manual.txt
 
-        if( (color_type == PNG_COLOR_TYPE_RGB) || (color_type == PNG_COLOR_TYPE_GRAY) || (color_type == PNG_COLOR_TYPE_PALETTE) )
-            png_set_filler(png_image, 0xFF, PNG_FILLER_AFTER);
+  if(bit_depth == 16)
+    png_set_strip_16(png);
 
-        if( (color_type == PNG_COLOR_TYPE_GRAY) || (color_type == PNG_COLOR_TYPE_GRAY_ALPHA) )
-            png_set_gray_to_rgb(png_image);
+  if(color_type == PNG_COLOR_TYPE_PALETTE)
+    png_set_palette_to_rgb(png);
 
-        png_read_update_info(png_image, png_info);
+  // PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16bit depth.
+  if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+    png_set_expand_gray_1_2_4_to_8(png);
 
-        row = (png_bytep*)malloc(sizeof(png_bytep) * height);
+  if(png_get_valid(png, info, PNG_INFO_tRNS))
+    png_set_tRNS_to_alpha(png);
 
-        if (row != NULL) {
+  // These color_type don't have an alpha channel then fill it with 0xff.
+  if(color_type == PNG_COLOR_TYPE_RGB ||
+     color_type == PNG_COLOR_TYPE_GRAY ||
+     color_type == PNG_COLOR_TYPE_PALETTE)
+    png_set_filler(png, 0xFF, PNG_FILLER_AFTER);
 
-            for(int y = 0; y < height; y++) {
-                row[y] = (png_byte*)malloc(png_get_rowbytes(png_image, png_info));
-                png_read_image(png_image, row);
-            }
-        } 
+  if(color_type == PNG_COLOR_TYPE_GRAY ||
+     color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+    png_set_gray_to_rgb(png);
 
-        else {
+  png_read_update_info(png, info);
 
-        }
+  if (row_pointers) abort();
 
-        fclose(f);
-        png_destroy_read_struct(&png_image, &png_info, NULL);
-        return createStructImage (height, width, row);
-    }
+  row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+  for(int y = 0; y < height; y++) {
+    row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(png,info));
+  }
 
-    else {
+  png_read_image(png, row_pointers);
 
-    }
+  fclose(fp);
+
+  png_destroy_read_struct(&png, &info, NULL);
+
+  return createStructImage(height, width, row_pointers);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,26 +128,12 @@ Image* createPointerImage (int height, int width) {
 
         image -> height = height;
         image -> width = width;
-        image -> matrix = (int**)malloc(sizeof(int*) * height);
 
-        if ( (image -> matrix) != NULL) {
+        for (n = 0; n < height; n++) {
 
-            for (n = 0; n < height; n++) {
-                image -> matrix[n] = (int*)malloc(sizeof(int) * width);
-
-                if ( (image -> matrix[n]) != NULL) {
-
-                    for (m = 0; m < width; m++) {
-                        image -> matrix[n][m] = 0;
-                    }
-                }
-                else {
-
-                }
+            for (m = 0; m < width; m++) {
+                image -> matrix[n][m] = 0;
             }
-        }
-        else {
-
         }
     }
 
