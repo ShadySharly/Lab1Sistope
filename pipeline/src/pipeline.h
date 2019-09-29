@@ -10,6 +10,12 @@
 
 void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, int* bValue);
 
+int isPercentage (int input);
+
+int isInteger (char* input);
+
+int exist (char* fileName);
+
 int main(int argc, char** argv);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@
 
 int main(int argc, char** argv) {
 
+    // Se definen las variables que almacenaran los valores de cada parametro de entrada
     int* cValue = (int*)malloc(sizeof(int));
     char* mValue = (char*)malloc(sizeof(char));
     int* nValue = (int*)malloc(sizeof(int));
