@@ -16,7 +16,10 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-void rectification (Image* image) {
+void rectification () {
+
+    Image* image;
+    read(STDIN_FILENO, &image, sizeof(Image));//lectura de la imagen
 
     int n, m, current_pixel;
 
@@ -30,6 +33,7 @@ void rectification (Image* image) {
             }
         }
     }
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

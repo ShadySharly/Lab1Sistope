@@ -20,7 +20,11 @@ int main(int argc, char** argv) {
 
     char input_file[50] = "../../images/gotelli.png";
     Image* image = reading (input_file);
-    printImage(image);
+    read(STDIN_FILENO, &image, sizeof(Image));//lectura de la imagen
+    //printImage(image);
+    write(STDOUT_FILENO, &image, sizeof(Image));//Escribir en el pipe
+    wait(NULL);
+    
 
     return 0;
 }

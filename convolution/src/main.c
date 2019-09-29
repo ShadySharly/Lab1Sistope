@@ -5,7 +5,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <string.h>
-
+#include "../../structs.h"
 # include "convolution.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,11 @@
 // - DESCRIPTION:
 
 int main(int argc, char** argv) {
+    Image* imagen;
+    read(STDIN_FILENO, &imagen, sizeof(Image));//lectura de la imagen
+    //Tirar convolucion
+    write(STDOUT_FILENO, &imagen, sizeof(Image));//Escribir en el pipe
+    wait(NULL);
 
     return 0;
 }
