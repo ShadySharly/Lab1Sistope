@@ -13,9 +13,16 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - argc: Numero de argumentos introducidos por consola
+//           - argv: Arreglo de punteros a caracteres correspondiente a los argumentos ingresados 
+//           - cValue: Puntero que almacena la cantidad de imagenes a leer
+//           - mValue: Puntero que almacena el nombre del archivo que contiene la matriz (mascara) para la convolucion 
+//           - nValue: Puntero que almacena el umbral de "negrura" para la clasificacion "nearly black"
+//           - bValue: Puntero que almacena la opcion de mostrar o no por consola los resultados obtenidos
+// - OUTPUTS: -
+// - DESCRIPTION: Obtiene los valores ingresados por consola verificando la validez de cada una de las banderas (flags) y los valores
+//                por los que estan acompañadas, almacenandolas en las variables de entrada pasadas por referencia. Si no se cumplen algunas de 
+//                las condiciones necesarias respetando la estructura de entrada y los tipos de datos el programa es abortado y no continua su ejecucion.
 
 void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, int* bValue) {
 
@@ -49,7 +56,7 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
             
             case 'm':
                 strcpy(mValue, optarg);
-                
+                // Verificacion que el arcivo ingresado existe 
                 if (!exist(mValue)) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     printf (" => El argumento de -%c debe ser un ARCHIVO EXISTENTE.\n", c);
@@ -64,7 +71,7 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
             
             case 'n':
                 strcpy(n_string, optarg);
-
+                // Verificacion de que se ingresa una cantidad de imagenes valida, osea un numero entero positivo
                 if (!isInteger(n_string)) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     printf (" => El argumento de -%c debe ser un ENTERO POSITIVO.\n", c);
@@ -75,9 +82,10 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
 
                 *nValue = atoi(optarg);
 
+                // Verificacion de que se ingresa una cantidad de imagenes valida, osea un numero entero positivo entre 0 y 100
                 if (!isPercentage(*nValue)) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
-                    printf (" => El argumento de -%c debe ser un ENTERO POSITIVO entre 0 y 100.\n", c);
+                    printf (" => El argumento de -%c debe ser un ENTERO POSITIVO ENTRE 0 Y 100.\n", c);
                     printf (" => Programa abortado\n");
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     abort ();
@@ -92,9 +100,21 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
                 break;
             
             case '?':
-
+                // Verificacion de existencia de argumentos
                 if ( (optopt == 'c') || (optopt == 'm') || (optopt == 'n') ) { 
-                    fprintf (stderr, " => La opcion -%c requiere un argumento.\n", optopt);
+                    printf ("%s\n", "-------------------------------------------------------------------------");
+                    printf (" => La opcion -%c requiere un argumento.\n", optopt);
+                    printf (" => Programa abortado\n");
+                    printf ("%s\n", "-------------------------------------------------------------------------");
+                    abort ();
+                }
+                // VErificacion de la validez de las banderas
+                else if (isprint (optopt)) {
+                    printf ("%s\n", "-------------------------------------------------------------------------");
+                    printf (" => Opcion -%c desconocida.\n", optopt);
+                    printf (" => Programa abortado\n");
+                    printf ("%s\n", "-------------------------------------------------------------------------");
+                    abort ();
                 }
 
             default:
@@ -104,9 +124,9 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - fileName: Nombre del archivo a leer
+// - OUTPUTS: Valor booleano 1 si el archivo existe, 0 en caso contrario
+// - DESCRIPTION: Verifica que el archivo con el nombre "fileName" existe y devuelve la verificacion.
 
 int exist (char* fileName) {
 
@@ -122,9 +142,10 @@ int exist (char* fileName) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - input: Cadena de caracteres a evaluar si corresponde a un numero entero positivo o no
+// - OUTPUTS: Valor booleano 1 si es entero positivo, 0 en caso contrario
+// - DESCRIPTION: Verifica si una cadena de caracteres de entrada posee en cada una de sus posiciones un caracter que es
+//                digito y es positivo
 
 int isInteger (char* input) {
 
@@ -140,9 +161,9 @@ int isInteger (char* input) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: input: Numero por determinar si es porcentaje o no
+// - OUTPUTS: Valor booleano 1 si es un porcentaje valido, 0 en caso contrario
+// - DESCRIPTION: Determina si la entrada es considerada como un porcentaje, es decir que su valor este entre el rango de 0 y 100 y que sea entero
 
 int isPercentage (int input) {
 
