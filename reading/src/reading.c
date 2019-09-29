@@ -13,84 +13,94 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - fileName: Nombre del archivo que contiene la imagen a leer
+// - OUTPUTS: Estructura "Image" que contiene la imagen en representacion matricial de enteros en escala de grises "matrix", y sus dimensiones
+//            respectivas "height" y "width"
+// - DESCRIPTION: Toma el nombre del archivo de entrada y lee la imagen con el nombre correspondiente, utilizando estructuras predifinidas en la
+//                directiva "png.g" se extrae la informacion de la imagen como los valores RGB de cada pixel y se aplica una formula entre estos valores
+//                para determinar el unico valor en escala de grises para cada uno de estos y se almacena en la matriz de la estructura de salida.
 
 Image* reading (char fileName[]) {
 
-    int width, height;
-png_byte color_type;
-png_byte bit_depth;
-png_bytep *row_pointers = NULL;
+    Image* image = NULL;
+    FILE* f = fopen(fileName, "rb");
 
-    FILE *fp = fopen(fileName, "rb");
+    if (f != NULL) {
 
-  png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-  if(!png) abort();
+        int n, width, height;
+        png_byte color_type;
+        png_byte bit_depth;
+        png_bytep* row = NULL;
 
-  png_infop info = png_create_info_struct(png);
-  if(!info) abort();
+        png_structp png_image = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
-  if(setjmp(png_jmpbuf(png))) abort();
+        if(!png_image)
+            abort();
 
-  png_init_io(png, fp);
+        png_infop info_image = png_create_info_struct(png_image);
 
-  png_read_info(png, info);
+        if(!info_image) 
+            abort();
 
-  width      = png_get_image_width(png, info);
-  height     = png_get_image_height(png, info);
-  color_type = png_get_color_type(png, info);
-  bit_depth  = png_get_bit_depth(png, info);
+        if(setjmp(png_jmpbuf(png_image))) 
+            abort();
 
-  // Read any color_type into 8bit depth, RGBA format.
-  // See http://www.libpng.org/pub/png/libpng-manual.txt
+        png_init_io(png_image, f);
+        png_read_info(png_image, info_image);
 
-  if(bit_depth == 16)
-    png_set_strip_16(png);
+        width = png_get_image_width(png_image, info_image);
+        height = png_get_image_height(png_image, info_image);
+        color_type = png_get_color_type(png_image, info_image);
+        bit_depth = png_get_bit_depth(png_image, info_image);
 
-  if(color_type == PNG_COLOR_TYPE_PALETTE)
-    png_set_palette_to_rgb(png);
+        if(bit_depth == 16)
+            png_set_strip_16(png_image);
 
-  // PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16bit depth.
-  if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-    png_set_expand_gray_1_2_4_to_8(png);
+        if(color_type == PNG_COLOR_TYPE_PALETTE)
+            png_set_palette_to_rgb(png_image);
 
-  if(png_get_valid(png, info, PNG_INFO_tRNS))
-    png_set_tRNS_to_alpha(png);
+        if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
+            png_set_expand_gray_1_2_4_to_8(png_image);
 
-  // These color_type don't have an alpha channel then fill it with 0xff.
-  if(color_type == PNG_COLOR_TYPE_RGB ||
-     color_type == PNG_COLOR_TYPE_GRAY ||
-     color_type == PNG_COLOR_TYPE_PALETTE)
-    png_set_filler(png, 0xFF, PNG_FILLER_AFTER);
+        if(png_get_valid(png_image, info_image, PNG_INFO_tRNS))
+            png_set_tRNS_to_alpha(png_image);
 
-  if(color_type == PNG_COLOR_TYPE_GRAY ||
-     color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-    png_set_gray_to_rgb(png);
+        if( (color_type == PNG_COLOR_TYPE_RGB) || (color_type == PNG_COLOR_TYPE_GRAY) || (color_type == PNG_COLOR_TYPE_PALETTE) )
+            png_set_filler(png_image, 0xFF, PNG_FILLER_AFTER);
 
-  png_read_update_info(png, info);
+        if( (color_type == PNG_COLOR_TYPE_GRAY) || (color_type == PNG_COLOR_TYPE_GRAY_ALPHA) )
+            png_set_gray_to_rgb(png_image);
 
-  if (row_pointers) abort();
+        png_read_update_info(png_image, info_image);
 
-  row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
-  for(int y = 0; y < height; y++) {
-    row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(png,info));
-  }
+        if (row)
+            abort();
 
-  png_read_image(png, row_pointers);
+        row = (png_bytep*)malloc(sizeof(png_bytep) * height);
 
-  fclose(fp);
+        for(n = 0; n < height; n++) {
+            row[n] = (png_byte*)malloc(png_get_rowbytes(png_image, info_image));
+        }
 
-  png_destroy_read_struct(&png, &info, NULL);
+        png_read_image(png_image, row);
+        png_destroy_read_struct(&png_image, &info_image, NULL);
+        fclose(f);
 
-  return createStructImage(height, width, row_pointers);
+        image = createStructImage(height, width, row);
+    } 
+
+    return image;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - height: Altura de la imagen 
+//           - width: Anchura de la imagen
+//           - row: Puntero que contiene los valores de cada pixel(cada uno es un arreglo) en su representacion RGB
+//                 (R = pixel[0], G = pixel[1], B = pixel[2])
+// - OUTPUTS: Estructura Image con los valores de "row" cargadas en la matriz de "image" con los valores de cada pixel en su represeentacion en escala de
+//            grises obtenida a traves de una formula 
+// - DESCRIPTION: Toma los valores RGB de cada pixel contenidas en "row" aplicando una transformacion utilizando la formula:
+//                (grey = (R * 54 + G * 183 * B * 19) / 256 ), y los traspasa a la matriz de enteros de "image"
 
 Image* createStructImage (int height, int width, png_bytep* row) {
 
@@ -115,9 +125,12 @@ Image* createStructImage (int height, int width, png_bytep* row) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - height: Altura de la imagen
+//           - width: Anchura de la image
+// - OUTPUTS: - image: Estructura Image inicializada en memoria, y con puros 0 en cada posicion (n, m) de la matriz de dimensiones "height" y "width"
+// - DESCRIPTION: Toma las dimensiones de una imagen cualquiera e inicializa una estructura Image cuya matriz tiene las dimensiones anteriores y contiene
+//                solo 0 (Se define por defecto los valores MAX_HEIGHT y MAX_WIDTH como la resolucion maxima de cada imagen, por lo que al recorrer
+//                la matriz se consideran los valores "height" y "width" en vez de los anteriores.
 
 Image* createPointerImage (int height, int width) {
 
@@ -145,9 +158,9 @@ Image* createPointerImage (int height, int width) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
 
 void printImage (Image* image) {
 
