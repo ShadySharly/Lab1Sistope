@@ -129,9 +129,9 @@ Image* createPointerImage (int height, int width) {
         image -> height = height;
         image -> width = width;
 
-        for (n = 0; n < height; n++) {
+        for (n = 0; n < MAX_HEIGHT; n++) {
 
-            for (m = 0; m < width; m++) {
+            for (m = 0; m < MAX_WIDTH; m++) {
                 image -> matrix[n][m] = 0;
             }
         }

@@ -13,11 +13,17 @@ release:
 	(cd pipeline; make)
 	(cd reading; make)
 	(cd convolution; make)
+	(cd rectification; make)
+	(cd pooling; make)
+	(cd clasification; make)
 	
 
 clean:
 	(cd pipeline; make clean)
 	(cd reading; make clean)
 	(cd convolution; make clean)
+	(cd rectification; clean)
+	(cd pooling; clean)
+	(cd clasification; clean)
 
 

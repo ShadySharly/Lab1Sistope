@@ -6,6 +6,9 @@
 # include <unistd.h>
 # include <string.h>
 
+# include "../../structs.h"
+# include "pooling.h"
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,10 +16,79 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
+Image* pooling (Image* image) {
+
+    int n, m;
+    int new_n = 0; 
+    int new_m = 0;
+    int new_height = (image -> height) / 3;
+    int new_width = (image -> width) / 3;
+    Image* rectified_image = createPointerImage (new_height, new_width);
+
+
+    for (n = 0; n < (image -> height); n = n + 3) {
+
+        for (m = 0; m < (image -> width); n = n + 3) {
+            rectified_image -> matrix[new_n][new_m] = maxPixel (image, n, m);
+            new_m++;
+        }
+        new_n++;
+    }
+
+    return rectified_image;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // - INPUTS:
 // - OUTPUTS:
 // - DESCRIPTION:
+
+int maxPixel (Image* image, int current_n, int current_m) {
+
+    int n, m;
+    int max = 0;
+
+    for (n = current_n; n < (n + 3); n++) {
+
+        for (m = current_m; m < (m + 3); m++) {
+            
+            if ( (image -> matrix[n][m]) > max ) {
+                max = image -> matrix[n][m];
+            }
+        }
+    }
+
+    return max;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS:
+// - OUTPUTS:
+// - DESCRIPTION:
+
+Image* createPointerImage (int height, int width) {
+
+    Image* image = (Image*)malloc(sizeof(Image));
+    int n, m;
+
+    if (image != NULL) {
+
+        image -> height = height;
+        image -> width = width;
+
+        for (n = 0; n < MAX_HEIGHT; n++) {
+
+            for (m = 0; m < MAX_WIDTH; m++) {
+                image -> matrix[n][m] = 0;
+            }
+        }
+    }
+
+    else {
+
+    }
+
+    return image;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
