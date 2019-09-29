@@ -32,6 +32,7 @@ Image* reading (char fileName[]) {
         png_byte bit_depth;
         png_bytep* row = NULL;
 
+        // Se crean las estructuras para manejar la informacion proveniente de "f"
         png_structp png_image = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
         if(!png_image)
@@ -48,11 +49,15 @@ Image* reading (char fileName[]) {
         png_init_io(png_image, f);
         png_read_info(png_image, info_image);
 
+        // Se obtiene la informacion contenida en "png_image" e "info_image" para obtener las dimensiones, la profundidad de bit y el tipo de 
+        // color de la imagen y se almacenan en variables respectivas
         width = png_get_image_width(png_image, info_image);
         height = png_get_image_height(png_image, info_image);
         color_type = png_get_color_type(png_image, info_image);
         bit_depth = png_get_bit_depth(png_image, info_image);
 
+        // Tomando en cuenta la informacion de la imagen anterior se modifican ciertos parametros de la imagen "png_image", tales como
+        // tipo de color en que viene esta de entrada Ej: RGB, escala de grises, etc.
         if(bit_depth == 16)
             png_set_strip_16(png_image);
 
@@ -76,6 +81,7 @@ Image* reading (char fileName[]) {
         if (row)
             abort();
 
+        // Se almacena memoria para "row" y se almacenan los bytes de cada fila n de la imagen en esta
         row = (png_bytep*)malloc(sizeof(png_bytep) * height);
 
         for(n = 0; n < height; n++) {
@@ -86,6 +92,7 @@ Image* reading (char fileName[]) {
         png_destroy_read_struct(&png_image, &info_image, NULL);
         fclose(f);
 
+        // Se traspasa la informacion de "row" a la estructura "image"
         image = createStructImage(height, width, row);
     } 
 
@@ -111,12 +118,16 @@ Image* createStructImage (int height, int width, png_bytep* row) {
         png_bytep current_row = row[n];
 
         for (m = 0; m < width; m++) {
+            // Se asigna a una variable el pixel (byte) actual de la iteracion
             png_bytep current_px = &(current_row[m * 4]);
+            // Se obtiene el RGB del pixel anterior
             int red = current_px[0];
             int green = current_px[1];
             int blue = current_px[2];
+            // Se aplica la formula multiplicando por una constante cada valor del RGB para obtener el valor en escala de grises
             int gray = ( (54 * red) + (183 * green) + (19 * blue) ) / 256;
 
+            // Se almacena el valor anterior en la matriz
             image -> matrix[n][m] = gray;
         }
     }
