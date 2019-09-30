@@ -18,7 +18,7 @@
 
 int main(int argc, char** argv) {
 
-    char input_file[50] = "../images/gotelli.png";
+    char input_file[50] = "../images/bryan.png";
     printf("%s\n", "Desde Reading");
     char* num_images = argv[1];
     char* maskFileName = argv[2];

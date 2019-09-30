@@ -306,16 +306,7 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
     }
 
     else {
-
-        for (i = 0; i < total_images; i++) {
-            char input_file[20];
-            strcpy(input_file, "../images/imagen_");
-            strcat(input_file, (i + 1));
-            Image* image = reading (input_file);
         
-
-        
-        }
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -328,9 +319,14 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
         close(pipe5[READ]);
         close(pipe5[WRITE]);
 
-        //Main
-
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        for (i = 0; i < total_images; i++) {
+            char input_file[20];
+            strcpy(input_file, "../images/imagen_");
+            strcat(input_file, (i + 1));
+            Image* image = reading (input_file);
+            write(STDOUT_FILENO, &image, sizeof(Image));
+        }
         wait(&status1);
     }
+}
 

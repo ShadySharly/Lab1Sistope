@@ -16,7 +16,7 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-Image* convolution (Image* image, int mask[3][3]) {
+Image* convolution (Image* image, char* maskFileName) {
 
     Image* new_image = addZeroes (image);
     Image* convolved_image = createPointerImage ( (image -> height), (image -> width) );
@@ -50,6 +50,45 @@ Image* convolution (Image* image, int mask[3][3]) {
     }
 
     return convolved_image;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS:
+// - OUTPUTS:
+// - DESCRIPTION:
+
+int** readMask (char* maskFileName) {
+
+    FILE* f = fopen (maskFileName, "r");
+    int** mask = NULL;
+    int n, m, value;
+
+    if (f != NULL) {
+        mask = (int**)malloc(sizeof(int*) * 3);
+
+        if (mask != NULL) {
+
+            for (n = 0; n < 3; n++) {
+                mask[n] = (int*)malloc(sizeof(int) * 3);
+
+                if (mask[n] != NULL) {
+                    
+                    for (m = 0; m < 3; m++) {
+                        fscanf(f, "%d", &value);
+                        mask[n][m] = value;
+                    }
+                }
+                else {
+
+                }
+            }
+        }
+        else{
+
+        }
+    }
+    
+    return mask;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
