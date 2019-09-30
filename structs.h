@@ -15,6 +15,7 @@
 typedef struct Image {
 
     int matrix[MAX_HEIGHT][MAX_WIDTH];
+    int mask[3][3];
     int height;
     int width;
 
