@@ -3,6 +3,7 @@
         "string.h": "c",
         "getopt.h": "c",
         "stdio.h": "c",
-        "png.h": "c"
+        "png.h": "c",
+        "types.h": "c"
     }
 }

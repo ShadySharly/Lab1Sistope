@@ -18,21 +18,12 @@
 
 int main(int argc, char** argv) {
 
-    char input_file[50];
-    strcpy(input_file, "../images/imagen_1.png");
-    printf("%s\n", "Desde Reading");
-    char* num_images = argv[1];
-    char* maskFileName = argv[2];
-    char* umbral = argv[3];
-    char* b_option = argv[4];
+    char* number_images = argv[1];
+    char* mask_file_name = argv[2];
+    char* threshold = argv[3];
+    char* b = argv[4];
 
-    printf("Numero de imagenes: %s\n", num_images);
-    printf("Ruta de mascara: %s\n", maskFileName);
-    printf("Umbral: %s\n", umbral);
-    printf("Opcion: %s\n", b_option);
-
-    Image* image = reading (input_file);
-    printImage(image);
+    pipeline (mask_file_name, number_images, threshold, b);
 
     return 0;
 }

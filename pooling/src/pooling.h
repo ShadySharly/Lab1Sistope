@@ -16,6 +16,10 @@ int maxPixel (Image* image, int n, int m);
 
 Image* createPointerImage (int height, int width);
 
+Image* addZeroes (Image* image);
+
+void copyImage (Image* sourceImage, Image* destinyImage);
+
 int main(int argc, char** argv);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

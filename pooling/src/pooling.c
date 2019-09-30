@@ -23,19 +23,20 @@ Image* pooling (Image* image) {
     int new_m = 0;
     int new_height = (image -> height) / 3;
     int new_width = (image -> width) / 3;
-    Image* rectified_image = createPointerImage (new_height, new_width);
+    Image* image_with_zeroes = addZeroes (image);
+    Image* pooled_image = createPointerImage (new_height, new_width);
 
 
-    for (n = 0; n < (image -> height); n = n + 3) {
+    for (n = 0; n < (image_with_zeroes -> height); n = n + 3) {
 
-        for (m = 0; m < (image -> width); m = m + 3) {
-            rectified_image -> matrix[new_n][new_m] = maxPixel (image, n, m);
+        for (m = 0; m < (image_with_zeroes -> width); m = m + 3) {
+            pooled_image -> matrix[new_n][new_m] = maxPixel (image_with_zeroes, n, m);
             new_m++;
         }
         new_n++;
     }
 
-    return rectified_image;
+    return pooled_image;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +90,53 @@ Image* createPointerImage (int height, int width) {
     }
 
     return image;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS:
+// - OUTPUTS:
+// - DESCRIPTION:
+
+Image* addZeroes (Image* image) {
+
+    int remaining_height = (image -> height) % 3;
+    int remaining_width = (image -> width) % 3;
+
+    if ( (remaining_height != 0) || (remaining_width != 0) ) {
+        int zeroes_height = 3 - remaining_height;
+        int zeroes_width = 3 - remaining_width;
+
+        if (remaining_height == 0) {
+            zeroes_height = 0;
+        }
+
+        if (remaining_width == 0) {
+            zeroes_width = 0;
+        }
+        
+        Image* new_image = createPointerImage ( (image -> height) + zeroes_height, (image -> width) + zeroes_width);
+        copyImage (image, new_image);
+        return new_image;
+    }  
+
+    return image;    
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS:
+// - OUTPUTS:
+// - DESCRIPTION:
+
+void copyImage (Image* source_image, Image* destiny_image) {
+
+    int n, m;
+
+    for (n = 0; n < (source_image -> height); n++) {
+
+        for (m = 0; m < (source_image -> width); m++) {
+            destiny_image -> matrix[n][m] = source_image -> matrix[n][m];
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

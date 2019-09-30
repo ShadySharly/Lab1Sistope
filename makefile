@@ -16,6 +16,7 @@ release:
 	(cd rectification; make)
 	(cd pooling; make)
 	(cd clasification; make)
+	(cd writing; make)
 	
 
 clean:
@@ -25,5 +26,6 @@ clean:
 	(cd rectification; make clean)
 	(cd pooling; make clean)
 	(cd clasification; make clean)
+	(cd writing; make clean)
 
 
