@@ -18,7 +18,12 @@
 
 int main(int argc, char** argv) {
 
-    char input_file[50] = "../../images/gotelli.png";
+    char input_file[20];
+    strcpy(input_file, "../../images/imagen_");
+    for(int i = 1; i<20/*remplazar por el numero de imagenes de entrada*/; i++)
+        strcat(input_file,i);
+}
+    //char input_file[50] = "../../images/gotelli.png";
     Image* image = reading (input_file);
     read(STDIN_FILENO, &image, sizeof(Image));//lectura de la imagen
     //printImage(image);
