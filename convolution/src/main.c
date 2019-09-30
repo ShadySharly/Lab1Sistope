@@ -17,6 +17,18 @@
 
 int main(int argc, char** argv) {
 
+    int i;
+    char* number_images = argv[1];
+    char* mask_file_name = argv[2];
+    
+    for (i = 0; i < atoi(number_images); i++) {
+        Image* image;
+        read(STDIN_FILENO, &image, sizeof(Image));
+        Image* convolved_image = convolution (image, mask_file_name);
+        write(STDOUT_FILENO, &convolved_image, sizeof(Image));
+        wait(NULL);
+    }
+
     return 0;
 }
 

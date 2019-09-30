@@ -28,7 +28,7 @@ Image* pooling (Image* image) {
 
     for (n = 0; n < (image -> height); n = n + 3) {
 
-        for (m = 0; m < (image -> width); n = n + 3) {
+        for (m = 0; m < (image -> width); m = m + 3) {
             rectified_image -> matrix[new_n][new_m] = maxPixel (image, n, m);
             new_m++;
         }

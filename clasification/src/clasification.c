@@ -14,7 +14,7 @@
 // - OUTPUTS:
 // - DESCRIPTION:
 
-int clasification (Image* image, int threshold) {
+void clasification (Image* image, int threshold) {
 
     int n, m, current_pixel, black_pixels_percentage;
     int total_pixels = (image -> height) * (image -> width);
@@ -33,9 +33,9 @@ int clasification (Image* image, int threshold) {
     black_pixels_percentage = (black_pixels * 100) / total_pixels;
 
     if (black_pixels_percentage >= threshold)
-        return 1;
+        image -> nearly_black = 1;
     
-    return 0;
+    image -> nearly_black = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,7 @@ Image* convolution (Image* image, char* maskFileName) {
 
     Image* new_image = addZeroes (image);
     Image* convolved_image = createPointerImage ( (image -> height), (image -> width) );
+    int** mask = readMask (maskFileName);
     int n, m, up_left, up_mid, up_right, left, mid, right, down_left, down_mid, down_right, new_pixel;
 
     if ( (new_image != NULL) && (convolved_image != NULL) ) {

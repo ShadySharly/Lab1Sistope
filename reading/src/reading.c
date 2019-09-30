@@ -54,7 +54,10 @@ Image* reading (char fileName[]) {
         // Se obtiene la informacion contenida en "png_image" e "info_image" para obtener las dimensiones, la profundidad de bit y el tipo de 
         // color de la imagen y se almacenan en variables respectivas
         width = png_get_image_width(png_image, info_image);
+        printf("ALTO: %d\n", width);
+        
         height = png_get_image_height(png_image, info_image);
+        printf("ANCHO: %d\n", height);
         color_type = png_get_color_type(png_image, info_image);
         bit_depth = png_get_bit_depth(png_image, info_image);
 
@@ -199,11 +202,11 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
     int  status1, status2, status3, status4, status5, i, total_images;
     total_images = atoi(images);
 
-    char* argvConvolution[] ={"../convolution/bin/convolution", maskFileName, images,  NULL};
+    char* argvConvolution[] ={"../convolution/bin/convolution", images,  maskFileName, NULL};
     char* argvRectification[] ={"../rectification/bin/rectification", images, NULL};
     char* argvPooling[] ={"../pooling/bin/pooling", images, NULL};
-    char* argvClasificator[] ={"../clasification/bin/clasification", umbral, images, NULL};
-    char* argvWriting[] ={"../writing/bin/writing", b, images, NULL};
+    char* argvClasificator[] ={"../clasification/bin/clasification", images, umbral, NULL};
+    char* argvWriting[] ={"../writing/bin/writing", images, b, NULL};
 
     int* pipe1 = (int*)malloc(sizeof(int) * 2);
     int* pipe2 = (int*)malloc(sizeof(int) * 2);
@@ -320,9 +323,10 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
         close(pipe5[WRITE]);
 
         for (i = 0; i < total_images; i++) {
+            int number_image = i + 1;
             char input_file[20];
             strcpy(input_file, "../images/imagen_");
-            strcat(input_file, (i + 1));
+            sprintf(input_file, "%d", number_image);
             Image* image = reading (input_file);
             write(STDOUT_FILENO, &image, sizeof(Image));
         }
