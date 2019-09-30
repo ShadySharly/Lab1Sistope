@@ -23,15 +23,40 @@ int main(int argc, char** argv) {
     int i;
     char* number_images = argv[1];
     char* b = argv[2];
-
+    if(b){
+        printf("|   image   | nearly black |\n");
+        printf("|-----------|--------------|\n");
+    }
     for (i = 0; i < atoi(number_images); i++) {
         Image* image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        
+        int number_image = i + 1;
+        char output_file[20];
+        strcpy(output_file, "out_");
+        sprintf(output_file, "%d", number_image);
+
         // writing
+
+        if(b){
+            for(int i= 0; i<atoi(number_images); i++){
+                Image image;
+                read(STDIN_FILENO, &image, sizeof(Image));
+                if(image.nearly_black==1){
+                    printf("|  imagen_%d |     yes      |\n",i+1);
+                }
+                else if(image.nearly_black==0){
+                    printf("|  imagen_%d |      no      |\n",i+1);
+                }
+            }
+            writing(image, output_file);
+        }
+        else{
+            writing(image, output_file);
+        }
 
         write(STDOUT_FILENO, &image, sizeof(Image));
         wait(NULL);
+
     }
 
 

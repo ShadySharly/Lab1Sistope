@@ -12,6 +12,7 @@ MAIN_SRC = $(SRC_DIR)/main.c
 PIPE_SRC = $(SRC_DIR)/writing.c
 EXEC = $(BIN_DIR)/writing
 C_FLAGS = -g -Wall
+LIB_FLAGS = -lpng
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #//////////////////////////////////////////////////////////////////// TARGETS ///////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@ all: inimsj $(EXEC) endmsj
 $(EXEC): clean bin obj $(MAIN_OBJ) $(PIPE_OBJ)
 	@echo '-------------------------------------------------------------------------'
 	@echo ' => Compiling target "$(@F)"'
-	$(CC) $(C_FLAGS) $(MAIN_OBJ) $(PIPE_OBJ) -o $@
+	$(CC) $(C_FLAGS) $(MAIN_OBJ) $(PIPE_OBJ) -o $@ $(LIB_FLAGS)
 	@echo ' => "$(@F)" compiled in the directory "$(@D)"'
 	@echo ' => Enter the directory "$(@D)" by typing: cd $(@D)'
 	@echo ' => Execute the program by typing: ./$(@F)'
