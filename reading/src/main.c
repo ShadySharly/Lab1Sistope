@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     //printImage(image);
     write(STDOUT_FILENO, &image, sizeof(Image));//Escribir en el pipe
     wait(NULL);
-    
+
 
     return 0;
 }

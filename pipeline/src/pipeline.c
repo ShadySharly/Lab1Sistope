@@ -190,16 +190,7 @@ void pipeline(){
         }
     }
     else{     
-        //Ejemplo matriz 6x6  
-        pixels.m = 3;
-        pixels.n = 6;
-        int i = 0;
-        int j = 0;
-        for(i=0;i<pixels.m;i++){
-            for(j=0;j<pixels.n;j++){
-                (pixels.matrix)[i][j]=i-j;
-            }
-        }
+        
         dup2(pipe1[WRITE],STDOUT_FILENO);
 
         close(pipe1[READ]);
@@ -212,9 +203,9 @@ void pipeline(){
         close(pipe5[READ]);
         close(pipe5[WRITE]);
 
-        //Main
+        //Reading
 
-        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        write(STDOUT_FILENO, &image, sizeof(Image));
         wait(&status1);
     }
 

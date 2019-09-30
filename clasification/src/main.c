@@ -15,10 +15,10 @@
 // - DESCRIPTION:
 
 int main(int argc, char** argv) {
-    Image* imagen;
-    read(STDIN_FILENO, &imagen, sizeof(Image));//lectura de la imagen
+    Image* image;
+    read(STDIN_FILENO, &image, sizeof(Image));//lectura de la imagen
     //Tirar clasification
-    write(STDOUT_FILENO, &imagen, sizeof(Image));//Escribir en el pipe
+    write(STDOUT_FILENO, &image, sizeof(Image));//Escribir en el pipe
     wait(NULL);
     return 0;
 }
