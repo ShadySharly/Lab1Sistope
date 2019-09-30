@@ -22,8 +22,8 @@ clean:
 	(cd pipeline; make clean)
 	(cd reading; make clean)
 	(cd convolution; make clean)
-	(cd rectification; clean)
-	(cd pooling; clean)
-	(cd clasification; clean)
+	(cd rectification; make clean)
+	(cd pooling; make clean)
+	(cd clasification; make clean)
 
 
