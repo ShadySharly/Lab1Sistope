@@ -18,14 +18,16 @@
 int main(int argc, char** argv) {
 
     // Se definen las variables que almacenaran los valores de cada parametro de entrada
-    int* cValue = (int*)malloc(sizeof(int));
-    char* mValue = (char*)malloc(sizeof(char));
-    int* nValue = (int*)malloc(sizeof(int));
-    int* bValue = (int*)malloc(sizeof(int));
+    char* cValue = (char*)malloc(sizeof(char)); // Cantidad de imagenes
+    char* mValue = (char*)malloc(sizeof(char)); // Ruta del archivo con la mascara
+    char* nValue = (char*)malloc(sizeof(char)); // Umbral de negrura
+    char* bValue = (char*)malloc(sizeof(char)); // Bandera para mostrar por consola los resultados
 
     if ( (cValue != NULL) && (mValue != NULL) && (nValue != NULL) && (bValue != NULL) ) {
         getParams (argc, argv, cValue, mValue, nValue, bValue);
 
+        char *args[]={"../reading/bin/reading", cValue, mValue, nValue, bValue, NULL}; 
+        execv(args[0], args);
     }
 
     return 0;

@@ -24,12 +24,11 @@
 //                por los que estan acompañadas, almacenandolas en las variables de entrada pasadas por referencia. Si no se cumplen algunas de 
 //                las condiciones necesarias respetando la estructura de entrada y los tipos de datos el programa es abortado y no continua su ejecucion.
 
-void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, int* bValue) {
+void getParams (int argc, char** argv, char* cValue, char* mValue, char* nValue, char* bValue) {
 
     int c;
-    char* m_string = (char*)malloc(sizeof(char));
-    char* n_string = (char*)malloc(sizeof(char));
-    *bValue = 0;
+    int int_n;
+    strcpy(bValue, "0");
 
     // c: Cantidad de Imagenes (int)
     // m: Archivo con la mascara o kernel (string)
@@ -41,9 +40,9 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
 
         switch (c) {
             case 'c':
-                strcpy(m_string, optarg);
+                strcpy(cValue, optarg);
                 // Verificacion de que se ingresa una cantidad de imagenes valida, osea un numero entero positivo
-                if (!isInteger(m_string) || (strcmp(m_string, "0") == 0) ) {
+                if (!isInteger(cValue) || (strcmp(cValue, "0") == 0) ) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     printf (" => El argumento de -%c debe ser un ENTERO POSITIVO MAYOR A 0.\n", c);
                     printf (" => Programa abortado\n");
@@ -51,7 +50,7 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
                     abort ();
                 }
 
-                *cValue = atoi(optarg);
+                printf(" => Cantiad de imagenes (-c): %s\n", cValue);
                 break;
             
             case 'm':
@@ -65,14 +64,14 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
                     abort ();
                 }
 
-                printf("mValue: %s\n", mValue);
-
+                printf(" => Ruta de la mascara (-m): %s\n", mValue);
                 break;
             
             case 'n':
-                strcpy(n_string, optarg);
+                strcpy(nValue, optarg);
+                int_n = atoi(optarg);
                 // Verificacion de que se ingresa una cantidad de imagenes valida, osea un numero entero positivo
-                if (!isInteger(n_string)) {
+                if (!isInteger(nValue)) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     printf (" => El argumento de -%c debe ser un ENTERO POSITIVO.\n", c);
                     printf (" => Programa abortado\n");
@@ -80,10 +79,8 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
                     abort ();
                 }
 
-                *nValue = atoi(optarg);
-
                 // Verificacion de que se ingresa una cantidad de imagenes valida, osea un numero entero positivo entre 0 y 100
-                if (!isPercentage(*nValue)) {
+                if (!isPercentage(int_n)) {
                     printf ("%s\n", "-------------------------------------------------------------------------");
                     printf (" => El argumento de -%c debe ser un ENTERO POSITIVO ENTRE 0 Y 100.\n", c);
                     printf (" => Programa abortado\n");
@@ -91,12 +88,13 @@ void getParams (int argc, char** argv, int* cValue, char* mValue, int* nValue, i
                     abort ();
                 }
             
-                printf("nValue: %d\n", *nValue);
+                printf(" => Umbral (-n): %s\n", nValue);
                 break;
             
             case 'b':
-                *bValue = 1;
-                printf("bValue: %d\n", *bValue);
+                strcpy(bValue, "1");
+
+                printf(" => Opcion b (-b): %s\n", bValue);
                 break;
             
             case '?':
@@ -136,8 +134,7 @@ int exist (char* fileName) {
         fclose(f);
         return 1;
     }
-        
-    fclose(f);
+      
     return 0;
 }
 

@@ -18,7 +18,18 @@
 
 int main(int argc, char** argv) {
 
-    char input_file[50] = "../../images/gotelli.png";
+    char input_file[50] = "../images/gotelli.png";
+    printf("%s\n", "Desde Reading");
+    int num_images = atoi(argv[1]);
+    char* maskFileName = argv[2];
+    int umbral = atoi(argv[3]);
+    int b_option = atoi(argv[4]);
+
+    printf("Numero de imagenes: %d\n", num_images);
+    printf("Ruta de mascara: %s\n", maskFileName);
+    printf("Umbral: %d\n", umbral);
+    printf("Opcion: %d\n", b_option);
+
     Image* image = reading (input_file);
     printImage(image);
 

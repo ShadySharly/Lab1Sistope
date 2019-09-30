@@ -26,7 +26,6 @@ Image* reading (char fileName[]) {
     FILE* f = fopen(fileName, "rb");
 
     if (f != NULL) {
-
         int n, width, height;
         png_byte color_type;
         png_byte bit_depth;
