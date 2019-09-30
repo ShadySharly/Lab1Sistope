@@ -7,6 +7,9 @@
 # include <string.h>
 # include <png.h>
 
+# include <sys/types.h>
+# include <sys/wait.h>
+
 # include "../../structs.h"
 # include "reading.h"
 
@@ -186,4 +189,148 @@ void printImage (Image* image) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
+
+void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
+
+    pid_t pid1, pid2, pid3, pid4, pid5;
+    int  status1, status2, status3, status4, status5, i, total_images;
+    total_images = atoi(images);
+
+    char* argvConvolution[] ={"../convolution/bin/convolution", maskFileName, images,  NULL};
+    char* argvRectification[] ={"../rectification/bin/rectification", images, NULL};
+    char* argvPooling[] ={"../pooling/bin/pooling", images, NULL};
+    char* argvClasificator[] ={"../clasification/bin/clasification", umbral, images, NULL};
+    char* argvWriting[] ={"../writing/bin/writing", b, images, NULL};
+
+    int* pipe1 = (int*)malloc(sizeof(int) * 2);
+    int* pipe2 = (int*)malloc(sizeof(int) * 2);
+    int* pipe3 = (int*)malloc(sizeof(int) * 2);
+    int* pipe4 = (int*)malloc(sizeof(int) * 2);
+    int* pipe5 = (int*)malloc(sizeof(int) * 2);
+
+    pipe(pipe1);
+    pipe(pipe2);
+    pipe(pipe3);
+    pipe(pipe4);
+    pipe(pipe5);
+
+    if( (pid1=fork()) == 0 ){
+        if( (pid2=fork()) == 0 ){
+            if( (pid3=fork()) == 0 ){
+                if( (pid4=fork()) == 0 ){
+                    if( (pid5=fork()) == 0 ){
+                        dup2(pipe5[READ],STDIN_FILENO);
+
+                        close(pipe1[READ]);
+                        close(pipe1[WRITE]);
+                        close(pipe2[READ]);
+                        close(pipe2[WRITE]);
+                        close(pipe3[READ]);
+                        close(pipe3[WRITE]);
+                        close(pipe4[READ]);
+                        close(pipe4[WRITE]);
+                        close(pipe5[WRITE]);
+
+                        //Writing
+                        execvp(argvWriting[0], argvWriting);
+                    }
+                    else{
+                        dup2(pipe4[READ],STDIN_FILENO);
+                        dup2(pipe5[WRITE],STDOUT_FILENO);
+
+                        close(pipe1[READ]);
+                        close(pipe1[WRITE]);
+                        close(pipe2[READ]);
+                        close(pipe2[WRITE]);
+                        close(pipe3[READ]);
+                        close(pipe3[WRITE]);
+                        close(pipe4[WRITE]);
+                        close(pipe5[READ]);
+
+                        //Clasificator
+                        execvp(argvClasificator[0], argvClasificator);
+                    }
+                }
+                else{
+                    dup2(pipe3[READ],STDIN_FILENO);
+                    dup2(pipe4[WRITE],STDOUT_FILENO);
+
+                    close(pipe1[READ]);
+                    close(pipe1[WRITE]);
+                    close(pipe2[READ]);
+                    close(pipe2[WRITE]);
+                    close(pipe3[WRITE]);
+                    close(pipe4[READ]);
+                    close(pipe5[READ]);
+                    close(pipe5[WRITE]);
+                    
+                    //Pooling
+                    execvp(argvPooling[0],argvPooling);
+                }
+            }
+            else{
+                dup2(pipe2[READ],STDIN_FILENO);
+                dup2(pipe3[WRITE],STDOUT_FILENO);
+
+                close(pipe1[READ]);
+                close(pipe1[WRITE]);
+                close(pipe2[WRITE]);
+                close(pipe3[READ]);
+                close(pipe4[READ]);
+                close(pipe4[WRITE]);
+                close(pipe5[READ]);
+                close(pipe5[WRITE]);
+
+                //Rectification
+                execvp(argvRectification[0], argvRectification);
+            }
+        }
+        else{
+            dup2(pipe1[READ],STDIN_FILENO);
+            dup2(pipe2[WRITE],STDOUT_FILENO);
+
+            close(pipe1[WRITE]);
+            close(pipe2[READ]);
+            close(pipe3[READ]);
+            close(pipe3[WRITE]);
+            close(pipe4[READ]);
+            close(pipe4[WRITE]);
+            close(pipe5[READ]);
+            close(pipe5[WRITE]);
+            //Convolution
+            execvp(argvConvolution[0], argvConvolution);
+        }
+    }
+
+    else {
+
+        for (i = 0; i < total_images; i++) {
+            char input_file[20];
+            strcpy(input_file, "../images/imagen_");
+            strcat(input_file, (i + 1));
+            Image* image = reading (input_file);
+        
+
+        
+        }
+        dup2(pipe1[WRITE],STDOUT_FILENO);
+
+        close(pipe1[READ]);
+        close(pipe2[READ]);
+        close(pipe2[WRITE]);
+        close(pipe3[READ]);
+        close(pipe3[WRITE]);
+        close(pipe4[READ]);
+        close(pipe4[WRITE]);
+        close(pipe5[READ]);
+        close(pipe5[WRITE]);
+
+        //Main
+
+        write(STDOUT_FILENO, &pixels, sizeof(pixelMatrix));
+        wait(&status1);
+    }
 

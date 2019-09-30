@@ -13,6 +13,8 @@
 
 Image* reading (char fileName[]);
 
+void pipeline(char* maskFileName, char* images, char* umbral, char* b);
+
 Image* createStructImage (int height, int width, png_bytep* row);
 
 Image* createPointerImage (int height, int width);
