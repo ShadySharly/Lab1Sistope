@@ -21,22 +21,26 @@ Image* pooling (Image* image) {
     int n, m;
     int new_n = 0; 
     int new_m = 0;
+
     Image* image_with_zeroes = addZeroes (image);
     int new_height = (image_with_zeroes -> height) / 3;
     int new_width = (image_with_zeroes -> width) / 3;
     Image* pooled_image = createPointerImage (new_height, new_width);
 
-
     for (n = 0; n < (image_with_zeroes -> height); n+=3) {
 
         for (m = 0; m < (image_with_zeroes -> width); m+=3) {
-            pooled_image -> matrix[new_n][new_m] = maxPixel (image_with_zeroes, n, m);
+            int current_n = n;
+            int current_m = m;
+            int max = maxPixel (image_with_zeroes, current_n, current_m);
+            pooled_image -> matrix[new_n][new_m] = max;
             new_m++;
         }
+        new_m = 0;
         new_n++;
     }
-
     return pooled_image;
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,12 +53,12 @@ int maxPixel (Image* image, int current_n, int current_m) {
     int n, m;
     int max = 0;
 
-    for (n = current_n; n < (n + 3); n++) {
+    for (n = current_n; n < (current_n + 3); n++) {
 
-        for (m = current_m; m < (m + 3); m++) {
+        for (m = current_m; m < (current_m + 3); m++) {
             
             if ( (image -> matrix[n][m]) > max ) {
-                max = image -> matrix[n][m];
+                max = (image -> matrix[n][m]);
             }
         }
     }
@@ -121,23 +125,6 @@ Image* addZeroes (Image* image) {
     }  
 
     return image;    
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
-
-void copyImage (Image* source_image, Image* destiny_image) {
-
-    int n, m;
-
-    for (n = 0; n < (source_image -> height); n++) {
-
-        for (m = 0; m < (source_image -> width); m++) {
-            destiny_image -> matrix[n][m] = source_image -> matrix[n][m];
-        }
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

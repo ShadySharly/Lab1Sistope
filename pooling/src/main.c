@@ -26,8 +26,9 @@ int main(int argc, char** argv) {
     for (i = 0; i < atoi(number_images); i++) {
         Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        Image* pooled_image = addZeroes (&image);
-        write(STDOUT_FILENO, pooled_image, sizeof(Image));
+        Image* pooled_image = pooling (&image);
+        image = *pooled_image;
+        write(STDOUT_FILENO, &image, sizeof(Image));
         
     }
     wait(NULL);
