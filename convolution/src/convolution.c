@@ -12,15 +12,23 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular, proveniente de la lectura
+//           - mask_file_name: Ruta del archivo que contiene la mascara para la convolucion, tambien llamada como "kernel"
+// - OUTPUTS: Estructura imagen anterior convolcionada
+// - DESCRIPTION: La convolucion consiste en tomar una mascara en forma de matriz, en este caso de dimensiones 3 x 3, y sobreponerla por cada pixel de
+//                la imagen, multiplicando las posiciones adyacentes de la mascara y la imagen, uncluyendo el pixel actual con la posicion
+//                correspondiente de la mascara, finalmente estos valores (pixel * mask) se promedian y el valor final es reemplazado en el pixel actual
+//                de la matriz de la imagen.
 
-Image* convolution (Image* image, char* maskFileName) {
-
+Image* convolution (Image* image, char* mask_file_name) {
+    
+    // Para emplear la convolucion en los bordes de la matriz de la imagen, se agrega un borde de 0 a la matriz, con lo que la matriz
+    // resulta de la altura y ancho originales mas dos respectivamente.
     Image* new_image = addZeroes (image);
     Image* convolved_image = createPointerImage ( (image -> height), (image -> width) );
-    int** mask = readMask (maskFileName);
+    // Se almacena la matriz de la mascara en un arreglo de enteros
+    int** mask = readMask (mask_file_name);
+    // Se definen las variables que almacenaran las multiplicaciones de cada pixel de cada posicion respecto a un pixel central (mid)
     int n, m, up_left, up_mid, up_right, left, mid, right, down_left, down_mid, down_right, new_pixel;
 
     if ( (new_image != NULL) && (convolved_image != NULL) ) {
@@ -28,6 +36,7 @@ Image* convolution (Image* image, char* maskFileName) {
         for (n = 1; n < ( (new_image -> height) - 1); n++) {
 
             for (m = 1; m < ( (new_image -> width) - 1); m++) {
+                // Se multiplica la matriz con la mascara respecto al pixel en la posicion (n, m)
                 up_left = (new_image -> matrix[n - 1][m - 1]) * mask[0][0];
                 up_mid = (new_image -> matrix[n - 1][m]) * mask[0][1];
                 up_right = (new_image -> matrix[n - 1][m + 1]) * mask[0][2];
@@ -38,9 +47,11 @@ Image* convolution (Image* image, char* maskFileName) {
                 down_mid = (new_image -> matrix[n + 1][m]) * mask[2][1];
                 down_right = (new_image -> matrix[n + 1][m + 1]) * mask[2][2];
 
+                // Se suman los valores y se saca el promedio
                 new_pixel = (up_left + up_mid + up_right + left + mid + right + down_left + down_mid + down_right);
                 new_pixel = new_pixel / 9;
 
+                // Se asigna el valor anterior a la matriz de la imagen resultante
                 convolved_image -> matrix[n - 1][m - 1] = new_pixel;
             }
         }
@@ -54,13 +65,13 @@ Image* convolution (Image* image, char* maskFileName) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - mask_file_name: Ruta del archivo que contiene la mascara para la convolucion, tambien llamada como "kernel"
+// - OUTPUTS: Matriz de enteros con los valores de la mascara del archivo de entrada "mask_file_name"
+// - DESCRIPTION: Lectura y almacenamiento de los valores del archivo de entrada, almacenados en un doble puntero entero
 
-int** readMask (char* maskFileName) {
+int** readMask (char* mask_file_name) {
 
-    FILE* f = fopen (maskFileName, "r");
+    FILE* f = fopen (mask_file_name, "r");
     int** mask = NULL;
     int n, m, value;
 
@@ -93,9 +104,9 @@ int** readMask (char* maskFileName) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: Estructura Image con los bordes en 0
+// - DESCRIPTION: Toma una imagen y a su matriz se le agrega un borde de 0
 
 Image* addZeroes (Image* image) {
 
@@ -120,9 +131,12 @@ Image* addZeroes (Image* image) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - height: Altura de la imagen
+//           - width: Anchura de la image
+// - OUTPUTS: - image: Estructura Image inicializada en memoria, y con puros 0 en cada posicion (n, m) de la matriz de dimensiones "height" y "width"
+// - DESCRIPTION: Toma las dimensiones de una imagen cualquiera e inicializa una estructura Image cuya matriz tiene las dimensiones anteriores y contiene
+//                solo 0 (Se define por defecto los valores MAX_HEIGHT y MAX_WIDTH como la resolucion maxima de cada imagen, por lo que al recorrer
+//                la matriz se consideran los valores "height" y "width" en vez de los anteriores.
 
 Image* createPointerImage (int height, int width) {
 
@@ -150,21 +164,3 @@ Image* createPointerImage (int height, int width) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
-// - OUTPUTS: -
-// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
-
-void copyImage (Image* source, Image* destiny) {
-
-    destiny -> height = source -> height;
-    destiny -> width = source -> width;
-    int n, m;
-
-    for (n = 0; n < source -> height; n++) {
-
-        for (m = 0; m < source -> width; m++) {
-            
-            destiny -> matrix[n][m] = source -> matrix[n][m];
-        }
-    }
-}

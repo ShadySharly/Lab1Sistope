@@ -14,9 +14,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: Estructura imagen, que contiene la matriz con los datos de la imagen y el string que tiene el nombre del archivo de salida para la escritura de la nueva imagen png
+// - OUTPUTS: Ninguna (es un procedimiento)
+// - DESCRIPTION: Se crea el archivo de salida, para luego definir los parametros que se escribiran en la imagen png. Luego de analizar si se crearon los datos
+//                se definen los parametros de la imagen dejando la mayoria como los valores por deferto, y se le atribuyen los particulares de la imagen.
+//                Finalmente se reconstruye el row  para ir escribiendolo uno a uno en el archivo. Finalmente se ciera el archivo.
+
 void writing (Image image, char* name) {
     FILE* file;
     png_structp png = NULL;

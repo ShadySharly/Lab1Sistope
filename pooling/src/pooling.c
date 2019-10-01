@@ -12,9 +12,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular, proveniente desde la rectificacion
+// - OUTPUTS: Imagen con su matriz aplicado el pooling
+// - DESCRIPTION: El pooling consiste en tomar la matriz de la imagen de entrada y evaluar cada 9 pixeles, es decir, evaluar cada submatriz de 3 x 3 y 
+//                encontrar el maximo valor de estos pixeles, el mayor de estos se reemplaza en una nueva matriz en la posicion (n, m), como se evaluan
+//                conjuntos de submatrices de 3 x 3, la matriz resultante resulta con dimensiones divididas por 3 de la matriz original.
 
 Image* pooling (Image* image) {
 
@@ -22,9 +24,13 @@ Image* pooling (Image* image) {
     int new_n = 0; 
     int new_m = 0;
 
+    // Como no es seguro que la imagen de entrada tenga dimensiones multiplo de 3, se agregan filas y columnas de 0 para que esto se cumpla
+    // Como no existen valores mayores que 0, no influyen en la resolucion del maximo de cada submatriz
     Image* image_with_zeroes = addZeroes (image);
+    // Se almacenan las dimensiones de la nueva matriz
     int new_height = (image_with_zeroes -> height) / 3;
     int new_width = (image_with_zeroes -> width) / 3;
+    // Se crea la nueva imagen con la matriz de las dimensiones anteriores
     Image* pooled_image = createPointerImage (new_height, new_width);
 
     for (n = 0; n < (image_with_zeroes -> height); n+=3) {
@@ -32,6 +38,7 @@ Image* pooling (Image* image) {
         for (m = 0; m < (image_with_zeroes -> width); m+=3) {
             int current_n = n;
             int current_m = m;
+            // Se obitne el maximo pixel
             int max = maxPixel (image_with_zeroes, current_n, current_m);
             pooled_image -> matrix[new_n][new_m] = max;
             new_m++;
@@ -44,9 +51,11 @@ Image* pooling (Image* image) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+//           - current_n: Indice de la fila actual de la matriz de la imagen "image"
+//           - current_m: Indice de la columna actual de la matriz de la imagen "image"
+// - OUTPUTS: Valor del maximo pixel de una submnatriz especifica
+// - DESCRIPTION: Determina el pixel con el valor maximo en la submatriz de 3 x 3 con pixel inicial en la pisicion current_n x current_m
 
 int maxPixel (Image* image, int current_n, int current_m) {
 
@@ -67,9 +76,12 @@ int maxPixel (Image* image, int current_n, int current_m) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - height: Altura de la imagen
+//           - width: Anchura de la image
+// - OUTPUTS: - image: Estructura Image inicializada en memoria, y con puros 0 en cada posicion (n, m) de la matriz de dimensiones "height" y "width"
+// - DESCRIPTION: Toma las dimensiones de una imagen cualquiera e inicializa una estructura Image cuya matriz tiene las dimensiones anteriores y contiene
+//                solo 0 (Se define por defecto los valores MAX_HEIGHT y MAX_WIDTH como la resolucion maxima de cada imagen, por lo que al recorrer
+//                la matriz se consideran los valores "height" y "width" en vez de los anteriores.
 
 Image* createPointerImage (int height, int width) {
 
@@ -97,9 +109,10 @@ Image* createPointerImage (int height, int width) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: Imagen con las columnas y filas de 0 agregadas
+// - DESCRIPTION: Si las dimensiones de la matriz de la imagen de entrada no es multiplo de 3, se le agregan filas y columnas de 0 para
+//                que se cumpla dicha condicion
 
 Image* addZeroes (Image* image) {
 
@@ -128,9 +141,10 @@ Image* addZeroes (Image* image) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - source_image: Imagen fuente cuyos datos desean ser replicados
+//           - destiny_image: Imagen de destino que se desea replicar datos de una imagen fuente
+// - OUTPUTS: -
+// - DESCRIPTION: Replica los datos desde una imagen fuente hacia una de destino
 
 void copyImage (Image* source_image, Image* destiny_image) {
 

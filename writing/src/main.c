@@ -14,27 +14,27 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////// MAIN ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - argv[1]: Numero de imagenes de entrada
+//           - argv[2]: Bandera b 
+// - OUTPUTS: - 
+// - DESCRIPTION: Ejecuta la etapa de "writing" del pipeline, mostrando por consola los resultados y escribiendo las imagenes de salida con cada etapa
+//                aplicada
 
 int main(int argc, char** argv) {
 
     int i;
     char* number_images = argv[1];
     char* b = argv[2];
+
     if(b){
         printf("|   image   | nearly black |\n");
         printf("|-----------|--------------|\n");
     }
 
     for (i = 0; i < atoi(number_images); i++) {
+
         Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        printf("%s\n", "Desde el writing");
-        printf("Largo: %d\n", image.height);
-        printf("Ancho: %d\n", image.width);
-        printf("%s\n", "Desde el writing");
         
         //printImage (image);
         
@@ -46,9 +46,10 @@ int main(int argc, char** argv) {
         strcat(output_file, string_number);
         strcat(output_file, ".png");
         // writing
-        printf("salida: %s\n", output_file);
+        //printf("salida: %s\n", output_file);
 
         if(atoi(b) == 1){
+
             if(image.nearly_black == 1){
                 printf("|  imagen_%d |     yes      |\n",i+1);
             }

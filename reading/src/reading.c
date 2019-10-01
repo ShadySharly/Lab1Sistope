@@ -23,10 +23,10 @@
 //                directiva "png.g" se extrae la informacion de la imagen como los valores RGB de cada pixel y se aplica una formula entre estos valores
 //                para determinar el unico valor en escala de grises para cada uno de estos y se almacena en la matriz de la estructura de salida.
 
-Image* reading (char fileName[]) {
+Image* reading (char file_name[]) {
 
     Image* image = NULL;
-    FILE* f = fopen(fileName, "rb");
+    FILE* f = fopen(file_name, "rb");
 
     if (f != NULL) {
         int n, width, height;
@@ -172,28 +172,6 @@ Image* createPointerImage (int height, int width) {
 
     return image;
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
-// - OUTPUTS: -
-// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
-
-Image createDefaultImage (int height, int width) {
-
-    Image image;
-    int n, m;
-
-    image.height = height;
-    image.width = width;
-
-    for (n = 0; n < MAX_HEIGHT; n++) {
-
-        for (m = 0; m < MAX_WIDTH; m++) {
-            image.matrix[n][m] = 0;
-        }
-    }
-
-    return image;
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
@@ -218,37 +196,17 @@ void printImage (Image image) {
 // - OUTPUTS: -
 // - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
 
-void copyImage (Image* source, Image* destiny) {
+void pipeline(char* mask_file_name, char* images, char* threshold, char* b) {
 
-    destiny -> height = source -> height;
-    destiny -> width = source -> width;
-    int n, m;
-
-    for (n = 0; n < source -> height; n++) {
-
-        for (m = 0; m < source -> width; m++) {
-            
-            destiny -> matrix[n][m] = source -> matrix[n][m];
-        }
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
-// - OUTPUTS: -
-// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
-
-void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
-
+    int i, total_images;
     pid_t pid1, pid2, pid3, pid4, pid5;
-    int  status1, status2, status3, status4, status5, i, total_images;
     total_images = atoi(images);
 
-    char* argvConvolution[] ={"../convolution/bin/convolution", images,  maskFileName, NULL};
-    char* argvRectification[] ={"../rectification/bin/rectification", images, NULL};
-    char* argvPooling[] ={"../pooling/bin/pooling", images, NULL};
-    char* argvClasificator[] ={"../clasification/bin/clasification", images, umbral, NULL};
-    char* argvWriting[] ={"../writing/bin/writing", images, b, NULL};
+    char* argv_convolution[] ={"../convolution/bin/convolution", images,  mask_file_name, NULL};
+    char* argv_rectification[] ={"../rectification/bin/rectification", images, NULL};
+    char* argv_pooling[] ={"../pooling/bin/pooling", images, NULL};
+    char* argv_clasification[] ={"../clasification/bin/clasification", images, threshold, NULL};
+    char* argv_writing[] ={"../writing/bin/writing", images, b, NULL};
 
     int* pipe1 = (int*)malloc(sizeof(int) * 2);
     int* pipe2 = (int*)malloc(sizeof(int) * 2);
@@ -263,7 +221,6 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
     pipe(pipe5);
 
     if( (pid1=fork()) == 0 ){
-        
         if( (pid2=fork()) == 0 ){
             if( (pid3=fork()) == 0 ){
                 if( (pid4=fork()) == 0 ){
@@ -280,8 +237,8 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
                         close(pipe4[WRITE]);
                         close(pipe5[WRITE]);
 
-                        //Writing
-                        execvp(argvWriting[0], argvWriting);
+                        // Cambio de imagen al proceso "writing"
+                        execvp(argv_writing[0], argv_writing);
                     }
                     else{
                         dup2(pipe4[READ],STDIN_FILENO);
@@ -296,8 +253,8 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
                         close(pipe4[WRITE]);
                         close(pipe5[READ]);
 
-                        //Clasificator
-                        execvp(argvClasificator[0], argvClasificator);
+                        // Cambio de imagen al proceso "clasification"
+                        execvp(argv_clasification[0], argv_clasification);
                     }
                 }
                 else{
@@ -313,8 +270,8 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
                     close(pipe5[READ]);
                     close(pipe5[WRITE]);
                     
-                    //Pooling
-                    execvp(argvPooling[0],argvPooling);
+                    // Cambio de imagen al proceso "pooling"
+                    execvp(argv_pooling[0],argv_pooling);
                 }
             }
             else{
@@ -330,8 +287,8 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
                 close(pipe5[READ]);
                 close(pipe5[WRITE]);
 
-                //Rectification
-                execvp(argvRectification[0], argvRectification);
+                // Cambio de imagen al proceso "rectificacion"
+                execvp(argv_rectification[0], argv_rectification);
             }
         }
         else{
@@ -346,10 +303,13 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
             close(pipe4[WRITE]);
             close(pipe5[READ]);
             close(pipe5[WRITE]);
-            //Convolution
-            execvp(argvConvolution[0], argvConvolution);
+
+            // Cambio de imagen al proceso "convolucion"
+            execvp(argv_convolution[0], argv_convolution);
         }
     }
+
+    // Ejecucion del proceso padre actual
 
     else {
         
@@ -377,7 +337,7 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
             write(STDOUT_FILENO, image, sizeof(Image));
         }
     }
-    wait(&status1);
+    wait(NULL);
     free(pipe1);
     pipe1 = NULL;
     free(pipe2);
@@ -391,3 +351,4 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
     
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
