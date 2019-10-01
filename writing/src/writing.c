@@ -96,7 +96,7 @@ void printImage (Image image) {
     for(n = 0; n < (image.height); n++) {
 
         for (m = 0; m < (image.width); m++) {
-            printf("%3d", image.matrix[n][m]);
+            printf("%5d", image.matrix[n][m]);
         }
         printf("\n");
     }

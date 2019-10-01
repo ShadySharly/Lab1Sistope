@@ -21,15 +21,15 @@ Image* pooling (Image* image) {
     int n, m;
     int new_n = 0; 
     int new_m = 0;
-    int new_height = (image -> height) / 3;
-    int new_width = (image -> width) / 3;
     Image* image_with_zeroes = addZeroes (image);
+    int new_height = (image_with_zeroes -> height) / 3;
+    int new_width = (image_with_zeroes -> width) / 3;
     Image* pooled_image = createPointerImage (new_height, new_width);
 
 
-    for (n = 0; n < (image_with_zeroes -> height); n = n + 3) {
+    for (n = 0; n < (image_with_zeroes -> height); n+=3) {
 
-        for (m = 0; m < (image_with_zeroes -> width); m = m + 3) {
+        for (m = 0; m < (image_with_zeroes -> width); m+=3) {
             pooled_image -> matrix[new_n][new_m] = maxPixel (image_with_zeroes, n, m);
             new_m++;
         }
@@ -101,6 +101,7 @@ Image* addZeroes (Image* image) {
 
     int remaining_height = (image -> height) % 3;
     int remaining_width = (image -> width) % 3;
+    
 
     if ( (remaining_height != 0) || (remaining_width != 0) ) {
         int zeroes_height = 3 - remaining_height;

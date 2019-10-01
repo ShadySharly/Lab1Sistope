@@ -31,10 +31,12 @@ int main(int argc, char** argv) {
     for (i = 0; i < atoi(number_images); i++) {
         Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        printf("%s\n", "Desde el writing");
-        printImage (image);
         printf("Largo: %d\n", image.height);
         printf("Ancho: %d\n", image.width);
+        printf("%s\n", "Desde el writing");
+        
+        printImage (image);
+        
 
         /*
         int number_image = i + 1;
@@ -60,8 +62,7 @@ int main(int argc, char** argv) {
         else{
             writing(image, output_file);
         }
-*/
-
+        */
     }
 
 
