@@ -150,3 +150,21 @@ Image* createPointerImage (int height, int width) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
+
+void copyImage (Image* source, Image* destiny) {
+
+    destiny -> height = source -> height;
+    destiny -> width = source -> width;
+    int n, m;
+
+    for (n = 0; n < source -> height; n++) {
+
+        for (m = 0; m < source -> width; m++) {
+            
+            destiny -> matrix[n][m] = source -> matrix[n][m];
+        }
+    }
+}

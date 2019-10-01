@@ -25,13 +25,13 @@ int main(int argc, char** argv) {
     char* threshold = argv[2];
 
     for (i = 0; i < atoi(number_images); i++) {
-        Image* image;
+        Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        clasification (image, atoi(threshold));
+        //clasification (image, atoi(threshold));
         write(STDOUT_FILENO, &image, sizeof(Image));
-        wait(NULL);
+        
     }
-
+    wait(NULL);
     return 0;
 }
 

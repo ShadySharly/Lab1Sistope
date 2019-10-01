@@ -172,23 +172,65 @@ Image* createPointerImage (int height, int width) {
 
     return image;
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
+
+Image createDefaultImage (int height, int width) {
+
+    Image image;
+    int n, m;
+
+    image.height = height;
+    image.width = width;
+
+    for (n = 0; n < MAX_HEIGHT; n++) {
+
+        for (m = 0; m < MAX_WIDTH; m++) {
+            image.matrix[n][m] = 0;
+        }
+    }
+
+    return image;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
 // - OUTPUTS: -
 // - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
 
-void printImage (Image* image) {
+void printImage (Image image) {
 
     int n, m;
-    for(n = 0; n < (image -> height); n++) {
+    for(n = 0; n < (image.height); n++) {
 
-        for (m = 0; m < (image -> width); m++) {
-            printf("%3d", image -> matrix[n][m]);
+        for (m = 0; m < (image.width); m++) {
+            printf("%3d", image.matrix[n][m]);
         }
         printf("\n");
     }
     printf("\n");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
+
+void copyImage (Image* source, Image* destiny) {
+
+    destiny -> height = source -> height;
+    destiny -> width = source -> width;
+    int n, m;
+
+    for (n = 0; n < source -> height; n++) {
+
+        for (m = 0; m < source -> width; m++) {
+            
+            destiny -> matrix[n][m] = source -> matrix[n][m];
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +263,7 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
     pipe(pipe5);
 
     if( (pid1=fork()) == 0 ){
+        
         if( (pid2=fork()) == 0 ){
             if( (pid3=fork()) == 0 ){
                 if( (pid4=fork()) == 0 ){
@@ -323,14 +366,28 @@ void pipeline(char* maskFileName, char* images, char* umbral, char* b) {
         close(pipe5[WRITE]);
 
         for (i = 0; i < total_images; i++) {
+
             int number_image = i + 1;
             char input_file[20];
+            char string_number[20];
             strcpy(input_file, "../images/imagen_");
-            sprintf(input_file, "%d", number_image);
+            sprintf(string_number, "%d", number_image);
+            strcat(input_file, string_number);
             Image* image = reading (input_file);
-            write(STDOUT_FILENO, &image, sizeof(Image));
+            write(STDOUT_FILENO, image, sizeof(Image));
         }
-        wait(&status1);
     }
+    wait(&status1);
+    free(pipe1);
+    pipe1 = NULL;
+    free(pipe2);
+    pipe2 = NULL;
+    free(pipe3);
+    pipe3 = NULL;
+    free(pipe4);
+    pipe4 = NULL;
+    free(pipe5);
+    pipe5 = NULL;
+    
 }
 

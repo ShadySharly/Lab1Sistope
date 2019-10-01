@@ -24,13 +24,13 @@ int main(int argc, char** argv) {
     char* number_images = argv[1];
 
     for (i = 0; i < atoi(number_images); i++) {
-        Image* image;
+        Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        rectification (image);
+        rectification (&image);
         write(STDOUT_FILENO, &image, sizeof(Image));
-        wait(NULL);
+        
     }
-
+    wait(NULL);
     return 0;
 }
 

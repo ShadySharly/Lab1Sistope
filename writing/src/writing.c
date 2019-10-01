@@ -86,8 +86,21 @@ void writing (Image* image, char* name) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// - INPUTS:
-// - OUTPUTS:
-// - DESCRIPTION:
+// - INPUTS: - image: Estructura Image con la informacion de una imagen en particular
+// - OUTPUTS: -
+// - DESCRIPTION: Muestra por consola la matriz de "image" donde cada posicion de esta corresponde al valor gris de cada pixel
+
+void printImage (Image image) {
+
+    int n, m;
+    for(n = 0; n < (image.height); n++) {
+
+        for (m = 0; m < (image.width); m++) {
+            printf("%3d", image.matrix[n][m]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

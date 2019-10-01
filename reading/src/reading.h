@@ -19,9 +19,13 @@ Image* createStructImage (int height, int width, png_bytep* row);
 
 Image* createPointerImage (int height, int width);
 
-void printImage (Image* image);
+void printImage (Image image);
 
 int main(int argc, char** argv);
+
+void copyImage (Image* source, Image* destiny);
+
+Image createDefaultImage (int height, int width);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

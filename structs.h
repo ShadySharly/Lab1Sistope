@@ -4,8 +4,8 @@
 # ifndef STRUCT_H
 # define STRUCT_H
 
-# define MAX_HEIGHT 1200
-# define MAX_WIDTH 1200
+# define MAX_HEIGHT 800
+# define MAX_WIDTH 800
 # define READ 0
 # define WRITE 1
 # define PARENT_READ read_pipe[0]

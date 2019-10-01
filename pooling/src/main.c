@@ -24,13 +24,13 @@ int main(int argc, char** argv) {
     char* number_images = argv[1];
 
     for (i = 0; i < atoi(number_images); i++) {
-        Image* image;
+        Image image;
         read(STDIN_FILENO, &image, sizeof(Image));
-        Image* pooled_image = pooling (image);
-        write(STDOUT_FILENO, &pooled_image, sizeof(Image));
-        wait(NULL);
+        //Image* pooled_image = pooling (&image);
+        write(STDOUT_FILENO, &image, sizeof(Image));
+        
     }
-
+    wait(NULL);
     return 0;
 }
 
