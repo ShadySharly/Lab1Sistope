@@ -34,34 +34,29 @@ int main(int argc, char** argv) {
         printf("%s\n", "Desde el writing");
         printf("Largo: %d\n", image.height);
         printf("Ancho: %d\n", image.width);
-        printImage (image);
+        printf("%s\n", "Desde el writing");
         
-
-        /*
+        //printImage (image);
+        
         int number_image = i + 1;
         char output_file[20];
+        char string_number[20];
         strcpy(output_file, "out_");
-        sprintf(output_file, "%d", number_image);
-
+        sprintf(string_number, "%d", number_image);
+        strcat(output_file, string_number);
+        strcat(output_file, ".png");
         // writing
+        printf("salida: %s\n", output_file);
 
-        if(b){
-            for(int i= 0; i<atoi(number_images); i++){
-                Image image;
-                read(STDIN_FILENO, &image, sizeof(Image));
-                if(image.nearly_black==1){
-                    printf("|  imagen_%d |     yes      |\n",i+1);
-                }
-                else if(image.nearly_black==0){
-                    printf("|  imagen_%d |      no      |\n",i+1);
-                }
+        if(atoi(b) == 1){
+            if(image.nearly_black == 1){
+                printf("|  imagen_%d |     yes      |\n",i+1);
             }
-            writing(image, output_file);
+            else if(image.nearly_black == 0){
+                printf("|  imagen_%d |      no      |\n",i+1);
+            }
         }
-        else{
-            writing(image, output_file);
-        }
-        */
+        writing(image, output_file);
     }
 
 
